@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contact Us</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f2ec;
+    --surface: #ffffff;
+    --ink: #1a1714;
+    --muted: #8a8178;
+    --border: #ddd8d0;
+    --border-focus: #1a1714;
+    --accent: #c96a2e;
+    --accent-dark: #a8561f;
+    --error: #c0392b;
+    --success: #2d7a4f;
+    --radius: 12px;
+    --transition: 0.2s ease;
+  }
+
+  html, body {
+    min-height: 100%;
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  /* Subtle grain texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  /* ── LEFT PANEL ── */
+  .left-panel {
+    background: var(--ink);
+    padding: clamp(40px, 8vw, 80px) clamp(32px, 6vw, 64px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 48px;
+  }
+
+  .brand-mark {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-size: 18px;
+  }
+
+  .brand-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .panel-headline {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .panel-tag {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .panel-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(36px, 4vw, 60px);
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+
+  .panel-title em {
+    font-style: italic;
+    color: #c8b99a;
+  }
+
+  .panel-desc {
+    font-size: 14px;
+    color: #8a8178;
+    line-height: 1.75;
+    max-width: 320px;
+  }
+
+  .contact-details {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .contact-icon {
+    width: 36px; height: 36px;
+    border: 1px solid #2e2b27;
+    border-radius: 8px;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+
+  .contact-icon svg { width: 15px; height: 15px; stroke: var(--accent); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .contact-text { font-size: 13px; color: #6b6460; }
+  .contact-value { font-size: 13px; color: #c8b99a; font-weight: 500; }
+
+  /* ── RIGHT PANEL ── */
+  .right-panel {
+    padding: clamp(40px, 8vw, 80px) clamp(24px, 6vw, 64px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .form-wrap {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .form-header {
+    margin-bottom: 40px;
+  }
+
+  .form-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .form-heading {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(26px, 3vw, 38px);
+    line-height: 1.15;
+    color: var(--ink);
+  }
+
+  /* ── FORM ── */
+  .contact-form { display: flex; flex-direction: column; gap: 22px; }
+
+  .field { display: flex; flex-direction: column; gap: 6px; position: relative; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .req { color: var(--accent); }
+
+  input, textarea, select {
+    width: 100%;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+    appearance: none;
+  }
+
+  input::placeholder, textarea::placeholder { color: #b8b2aa; }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(26,23,20,0.07);
+    background: #fff;
+  }
+
+  input.error, textarea.error, select.error {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgba(192,57,43,0.08);
+  }
+
+  input.valid, textarea.valid, select.valid {
+    border-color: var(--success);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 130px;
+    line-height: 1.6;
+  }
+
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '';
+    position: absolute;
+    right: 16px; top: 50%; transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--muted);
+    pointer-events: none;
+    margin-top: 3px;
+  }
+
+  /* Error / hint messages */
+  .field-msg {
+    font-size: 11px;
+    min-height: 16px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: opacity 0.2s;
+  }
+
+  .field-msg.error-msg { color: var(--error); }
+  .field-msg.hint-msg { color: var(--muted); }
+
+  /* Character counter */
+  .char-count {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    transition: color 0.2s;
+  }
+  .char-count.warn { color: var(--accent); }
+
+  /* Submit button */
+  .submit-btn {
+    width: 100%;
+    padding: 16px 28px;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background var(--transition), transform 0.15s, box-shadow var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .submit-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+    pointer-events: none;
+  }
+
+  .submit-btn:hover {
+    background: #2e2b27;
+    box-shadow: 0 8px 24px rgba(26,23,20,0.25);
+    transform: translateY(-1px);
+  }
+
+  .submit-btn:active { transform: translateY(0); }
+
+  .submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-arrow { transition: transform 0.2s; }
+  .submit-btn:not(:disabled):hover .btn-arrow { transform: translateX(4px); }
+
+  /* Spinner */
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── SUCCESS STATE ── */
+  .success-overlay {
+    display: none;
+    text-align: center;
+    padding: 32px 0;
+    animation: fadeUp 0.4s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .success-icon {
+    width: 64px; height: 64px;
+    background: rgba(45, 122, 79, 0.1);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+  }
+
+  .success-icon svg { width: 28px; height: 28px; stroke: var(--success); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .success-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+
+  .success-msg { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
+
+  .reset-btn {
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 22px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--ink);
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .reset-btn:hover { border-color: var(--ink); background: rgba(26,23,20,0.04); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .page { grid-template-columns: 1fr; }
+
+    .left-panel {
+      position: static;
+      height: auto;
+      padding: 40px 28px;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .brand { margin-bottom: 0; }
+    .panel-headline { display: none; }
+    .contact-details { flex-direction: row; flex-wrap: wrap; gap: 12px; }
+
+    .right-panel { padding: 40px 24px; }
+  }
+
+  @media (max-width: 540px) {
+    .left-panel { flex-direction: column; align-items: flex-start; }
+    .field-row { grid-template-columns: 1fr; gap: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- LEFT PANEL -->
+  <aside class="left-panel">
+    <div class="brand">
+      <div class="brand-mark">✦</div>
+      <span class="brand-name">Studio</span>
+    </div>
+
+    <div class="panel-headline">
+      <p class="panel-tag">Get in Touch</p>
+      <h1 class="panel-title">Let's talk<br>about your <em>idea.</em></h1>
+      <p class="panel-desc">We'd love to hear from you. Send a message and we'll get back to you within one business day.</p>
+    </div>
+
+    <div class="contact-details">
+      <div class="contact-item">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div>
+          <div class="contact-text">Email</div>
+          <div class="contact-value">hello@studio.co</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.5a16 16 0 0 0 6 6l.94-.94a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <div>
+          <div class="contact-text">Phone</div>
+          <div class="contact-value">+1 (555) 000-0000</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div>
+          <div class="contact-text">Location</div>
+          <div class="contact-value">San Francisco, CA</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- RIGHT PANEL -->
+  <main class="right-panel">
+    <div class="form-wrap">
+
+      <div class="form-header">
+        <p class="form-eyebrow">Send a message</p>
+        <h2 class="form-heading">We'll reply<br>within 24 hours.</h2>
+      </div>
+
+      <!-- SUCCESS STATE -->
+      <div class="success-overlay" id="successOverlay">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h3 class="success-title">Message sent!</h3>
+        <p class="success-msg">Thank you for reaching out. We'll get back to you as soon as possible.</p>
+        <button class="reset-btn" id="resetBtn">Send another message</button>
+      </div>
+
+      <!-- FORM -->
+      <form class="contact-form" id="contactForm" novalidate>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="fullName">Full Name <span class="req">*</span></label>
+            <input type="text" id="fullName" name="fullName" placeholder="Jane Doe" autocomplete="name" />
+            <span class="field-msg error-msg" id="fullName-error"></span>
+          </div>
+          <div class="field">
+            <label for="email">Email Address <span class="req">*</span></label>
+            <input type="email" id="email" name="email" placeholder="jane@example.com" autocomplete="email" />
+            <span class="field-msg error-msg" id="email-error"></span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="subject">Subject <span class="req">*</span></label>
+          <div class="select-wrap">
+            <select id="subject" name="subject">
+              <option value="" disabled selected>Select a topic…</option>
+              <option value="general">General Inquiry</option>
+              <option value="project">New Project</option>
+              <option value="partnership">Partnership</option>
+              <option value="support">Support</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <span class="field-msg error-msg" id="subject-error"></span>
+        </div>
+
+        <div class="field">
+          <label for="message">Message <span class="req">*</span></label>
+          <textarea id="message" name="message" placeholder="Tell us what's on your mind…" maxlength="500"></textarea>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="field-msg error-msg" id="message-error"></span>
+            <span class="char-count" id="charCount">0 / 500</span>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span id="btnText">Send Message</span>
+          <svg class="btn-arrow" id="btnArrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+          <div class="spinner" id="spinner"></div>
+        </button>
+
+      </form>
+    </div>
+  </main>
+
+</div>
+
+<script>
+  const form = document.getElementById('contactForm');
+  const successOverlay = document.getElementById('successOverlay');
+  const resetBtn = document.getElementById('resetBtn');
+  const messageTA = document.getElementById('message');
+  const charCount = document.getElementById('charCount');
+  const submitBtn = document.getElementById('submitBtn');
+  const spinner = document.getElementById('spinner');
+  const btnText = document.getElementById('btnText');
+  const btnArrow = document.getElementById('btnArrow');
+
+  // ── Character counter ──
+  messageTA.addEventListener('input', () => {
+    const len = messageTA.value.length;
+    charCount.textContent = `${len} / 500`;
+    charCount.classList.toggle('warn', len > 400);
+  });
+
+  // ── Validation helpers ──
+  const validators = {
+    fullName(v) {
+      if (!v.trim()) return 'Full name is required.';
+      if (v.trim().length < 2) return 'Please enter your full name.';
+      return '';
+    },
+    email(v) {
+      if (!v.trim()) return 'Email address is required.';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())) return 'Please enter a valid email address.';
+      return '';
+    },
+    subject(v) {
+      if (!v) return 'Please select a subject.';
+      return '';
+    },
+    message(v) {
+      if (!v.trim()) return 'Message is required.';
+      if (v.trim().length < 10) return 'Message must be at least 10 characters.';
+      return '';
+    }
+  };
+
+  function showError(fieldId, msg) {
+    const el = document.getElementById(fieldId);
+    const errEl = document.getElementById(`${fieldId}-error`);
+    if (msg) {
+      el.classList.add('error');
+      el.classList.remove('valid');
+      errEl.textContent = '⚠ ' + msg;
+    } else {
+      el.classList.remove('error');
+      el.classList.add('valid');
+      errEl.textContent = '';
+    }
+    return !msg;
+  }
+
+  function validateField(id) {
+    const el = document.getElementById(id);
+    const msg = validators[id](el.value);
+    return showError(id, msg);
+  }
+
+  // Live validation on blur
+  ['fullName', 'email', 'subject', 'message'].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('blur', () => validateField(id));
+    el.addEventListener('input', () => {
+      // Clear error while typing if already errored
+      if (el.classList.contains('error')) validateField(id);
+    });
+  });
+
+  // ── Submit ──
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const fields = ['fullName', 'email', 'subject', 'message'];
+    const valid = fields.map(validateField).every(Boolean);
+    if (!valid) {
+      // Focus first error
+      const firstErr = form.querySelector('.error');
+      if (firstErr) firstErr.focus();
+      return;
+    }
+
+    // Simulate async submit
+    submitBtn.disabled = true;
+    spinner.style.display = 'block';
+    btnText.textContent = 'Sending…';
+    btnArrow.style.display = 'none';
+
+    await new Promise(r => setTimeout(r, 1600));
+
+    form.style.display = 'none';
+    successOverlay.style.display = 'block';
+    submitBtn.disabled = false;
+    spinner.style.display = 'none';
+    btnText.textContent = 'Send Message';
+    btnArrow.style.display = '';
+  });
+
+  resetBtn.addEventListener('click', () => {
+    form.reset();
+    charCount.textContent = '0 / 500';
+    ['fullName', 'email', 'subject', 'message'].forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.remove('error', 'valid');
+      document.getElementById(`${id}-error`).textContent = '';
+    });
+    successOverlay.style.display = 'none';
+    form.style.display = '';
+  });
+</script>
+</body>
+</html>

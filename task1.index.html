@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sidebar Component</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;9..144,600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sidebar-w: 260px;
+    --bg: #0f0e11;
+    --surface: #18161c;
+    --surface2: #221f29;
+    --border: #2e2a38;
+    --accent: #c8f05c;
+    --accent2: #8b6ef5;
+    --text: #e8e3f0;
+    --muted: #6b6478;
+    --transition: 0.38s cubic-bezier(0.77, 0, 0.18, 1);
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'DM Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 28px 0 24px;
+    transform: translateX(0);
+    transition: transform var(--transition), box-shadow var(--transition);
+    z-index: 100;
+    will-change: transform;
+  }
+
+  .sidebar.collapsed {
+    transform: translateX(calc(-1 * var(--sidebar-w)));
+    box-shadow: none;
+  }
+
+  .sidebar:not(.collapsed) {
+    box-shadow: 6px 0 40px rgba(0,0,0,0.45);
+  }
+
+  /* Logo */
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 24px 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .logo-mark {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .logo-mark::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  }
+
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .logo-name {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.3px;
+    line-height: 1.1;
+  }
+
+  .logo-sub {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* Nav links */
+  .sidebar-nav {
+    flex: 1;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .nav-label {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 12px 6px;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: background 0.18s, color 0.18s;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .nav-link:hover {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .nav-link.active {
+    background: rgba(200, 240, 92, 0.1);
+    color: var(--accent);
+  }
+
+  .nav-link.active .nav-icon {
+    color: var(--accent);
+  }
+
+  .nav-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 3px; height: 60%;
+    background: var(--accent);
+    border-radius: 0 4px 4px 0;
+  }
+
+  .nav-icon {
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+    opacity: 0.75;
+    transition: opacity 0.18s;
+  }
+
+  .nav-link:hover .nav-icon,
+  .nav-link.active .nav-icon { opacity: 1; }
+
+  .badge {
+    margin-left: auto;
+    background: var(--accent2);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 20px;
+    letter-spacing: 0.03em;
+  }
+
+  /* Bottom user area */
+  .sidebar-footer {
+    border-top: 1px solid var(--border);
+    padding: 16px 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent2), #e07cf0);
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .user-info { flex: 1; min-width: 0; }
+  .user-name { font-size: 12px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .user-role { font-size: 10px; color: var(--muted); }
+
+  /* ── TOGGLE BUTTON ── */
+  .toggle-btn {
+    position: fixed;
+    top: 20px;
+    left: calc(var(--sidebar-w) - 16px);
+    z-index: 200;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: left var(--transition), background 0.18s, transform 0.18s;
+    color: var(--text);
+  }
+
+  .toggle-btn:hover {
+    background: var(--surface2);
+    transform: scale(1.1);
+  }
+
+  .sidebar.collapsed ~ .toggle-btn {
+    left: 12px;
+  }
+
+  .toggle-icon {
+    width: 16px; height: 16px;
+    transition: transform var(--transition);
+  }
+
+  .sidebar.collapsed ~ .toggle-btn .toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  /* ── OVERLAY (mobile) ── */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(2px);
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    min-height: 100vh;
+    padding: 60px 40px 40px;
+    transition: margin-left var(--transition);
+  }
+
+  .sidebar.collapsed ~ .toggle-btn ~ .main,
+  .sidebar.collapsed ~ .main {
+    margin-left: 0;
+  }
+
+  .page-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 300;
+    color: var(--text);
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+
+  .page-title span { color: var(--accent); }
+
+  .page-sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 48px;
+    line-height: 1.6;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .card:hover {
+    border-color: var(--accent2);
+    transform: translateY(-2px);
+  }
+
+  .card-icon { font-size: 24px; margin-bottom: 12px; }
+  .card-title { font-family: 'Fraunces', serif; font-size: 16px; margin-bottom: 6px; font-weight: 600; }
+  .card-text { font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .sidebar {
+      box-shadow: none;
+    }
+
+    .sidebar:not(.collapsed) {
+      box-shadow: 0 0 60px rgba(0,0,0,0.7);
+    }
+
+    .overlay {
+      display: block;
+    }
+
+    .overlay.visible {
+      opacity: 1;
+    }
+
+    .main {
+      margin-left: 0 !important;
+      padding: 60px 20px 24px;
+    }
+
+    .toggle-btn {
+      left: 12px !important;
+    }
+
+    .sidebar:not(.collapsed) ~ .toggle-btn {
+      left: calc(var(--sidebar-w) - 16px) !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+
+  <!-- Logo -->
+  <div class="sidebar-logo">
+    <div class="logo-mark">✦</div>
+    <div class="logo-text">
+      <span class="logo-name">Luminary</span>
+      <span class="logo-sub">Dashboard v2</span>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="sidebar-nav">
+    <span class="nav-label">Menu</span>
+
+    <a class="nav-link active" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+      </svg>
+      Overview
+    </a>
+
+    <a class="nav-link" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3v18h18"/><path d="M18.4 9l-5.4 5.4-2.4-2.4L6 17"/>
+      </svg>
+      Analytics
+      <span class="badge">New</span>
+    </a>
+
+    <a class="nav-link" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      Audience
+    </a>
+
+    <a class="nav-link" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+      </svg>
+      Messages
+      <span class="badge">4</span>
+    </a>
+
+    <a class="nav-link" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+      </svg>
+      Settings
+    </a>
+  </nav>
+
+  <!-- Footer -->
+  <div class="sidebar-footer">
+    <div class="avatar">AL</div>
+    <div class="user-info">
+      <div class="user-name">Alex Lambert</div>
+      <div class="user-role">Admin</div>
+    </div>
+  </div>
+
+</aside>
+
+<!-- TOGGLE BUTTON -->
+<button class="toggle-btn" id="toggleBtn" aria-label="Toggle sidebar">
+  <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="15 18 9 12 15 6"/>
+  </svg>
+</button>
+
+<!-- MOBILE OVERLAY -->
+<div class="overlay" id="overlay"></div>
+
+<!-- MAIN -->
+<main class="main">
+  <h1 class="page-title">Good morning, <span>Alex</span> ✦</h1>
+  <p class="page-sub">Here's what's happening across your workspace today.</p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">📈</div>
+      <div class="card-title">Revenue</div>
+      <div class="card-text">Up 14.2% compared to last month's figures.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">👥</div>
+      <div class="card-title">Active Users</div>
+      <div class="card-text">3,891 users active in the last 24 hours.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">💬</div>
+      <div class="card-title">Messages</div>
+      <div class="card-text">4 unread messages waiting for your reply.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <div class="card-title">Performance</div>
+      <div class="card-text">System running at optimal capacity today.</div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const toggleBtn = document.getElementById('toggleBtn');
+  const overlay = document.getElementById('overlay');
+  const isMobile = () => window.innerWidth <= 768;
+
+  // Start collapsed on mobile
+  if (isMobile()) sidebar.classList.add('collapsed');
+
+  function open() {
+    sidebar.classList.remove('collapsed');
+    if (isMobile()) overlay.classList.add('visible');
+  }
+
+  function close() {
+    sidebar.classList.add('collapsed');
+    overlay.classList.remove('visible');
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    sidebar.classList.contains('collapsed') ? open() : close();
+  });
+
+  overlay.addEventListener('click', close);
+
+  window.addEventListener('resize', () => {
+    if (!isMobile()) overlay.classList.remove('visible');
+  });
+</script>
+</body>
+</html>

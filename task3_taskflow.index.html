@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskFlow – Do More, Stress Less</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0d0f;
+    --paper: #f5f2ec;
+    --accent: #ff4d1c;
+    --accent2: #1c6fff;
+    --muted: #7a7870;
+    --card: #fff;
+    --border: #e2ddd6;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 2.5rem;
+    backdrop-filter: blur(16px);
+    background: rgba(245, 242, 236, 0.88);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.4rem; letter-spacing: -0.04em;
+    color: var(--ink);
+  }
+  .logo span { color: var(--accent); }
+  nav ul { list-style: none; display: flex; gap: 2rem; }
+  nav ul li a {
+    text-decoration: none; font-size: 0.9rem;
+    color: var(--muted); transition: color .2s;
+  }
+  nav ul li a:hover { color: var(--ink); }
+  .nav-cta {
+    background: var(--ink); color: var(--paper);
+    padding: .55rem 1.4rem; border-radius: 100px;
+    font-size: .88rem; font-weight: 500;
+    text-decoration: none; transition: background .2s;
+  }
+  .nav-cta:hover { background: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid; place-items: center;
+    padding: 7rem 2rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 40%, rgba(255,77,28,.10) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 20% 70%, rgba(28,111,255,.08) 0%, transparent 70%);
+  }
+  /* Floating shapes */
+  .blob {
+    position: absolute; border-radius: 50%;
+    opacity: .07; animation: drift 12s ease-in-out infinite alternate;
+  }
+  .blob1 { width: 420px; height: 420px; background: var(--accent); top: -80px; right: -60px; animation-delay: 0s; }
+  .blob2 { width: 280px; height: 280px; background: var(--accent2); bottom: 40px; left: -60px; animation-delay: -5s; }
+  @keyframes drift { from { transform: translate(0,0) rotate(0deg); } to { transform: translate(30px, 20px) rotate(20deg); } }
+
+  .hero-inner { position: relative; z-index: 1; text-align: center; max-width: 720px; }
+  .hero-badge {
+    display: inline-block;
+    background: var(--card); border: 1px solid var(--border);
+    padding: .35rem 1rem; border-radius: 100px;
+    font-size: .8rem; color: var(--muted); margin-bottom: 1.8rem;
+    letter-spacing: .04em; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 800; line-height: 1.0;
+    letter-spacing: -0.04em; margin-bottom: 1.4rem;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero p {
+    font-size: 1.15rem; color: var(--muted);
+    line-height: 1.7; max-width: 500px; margin: 0 auto 2.4rem;
+    font-weight: 300;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: .6rem;
+    background: var(--accent); color: #fff;
+    padding: .9rem 2.2rem; border-radius: 100px;
+    font-size: 1rem; font-weight: 600;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 4px 24px rgba(255,77,28,.3);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(255,77,28,.4); }
+  .btn-primary svg { width: 18px; height: 18px; }
+
+  .hero-mockup {
+    margin-top: 4rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 24px 80px rgba(0,0,0,.08);
+    max-width: 600px; margin-left: auto; margin-right: auto;
+  }
+  .mockup-bar { display: flex; gap: .5rem; margin-bottom: 1rem; }
+  .mockup-bar span { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+  .mockup-bar span:nth-child(1) { background: #ff5f56; }
+  .mockup-bar span:nth-child(2) { background: #ffbd2e; }
+  .mockup-bar span:nth-child(3) { background: #27c93f; }
+  .task-list { display: flex; flex-direction: column; gap: .6rem; }
+  .task-item {
+    display: flex; align-items: center; gap: .8rem;
+    padding: .7rem 1rem; border-radius: 10px;
+    background: var(--paper); font-size: .9rem;
+  }
+  .task-check {
+    width: 18px; height: 18px; border-radius: 50%;
+    flex-shrink: 0; display: grid; place-items: center;
+  }
+  .task-check.done { background: #27c93f; }
+  .task-check.done::after { content: '✓'; color: #fff; font-size: .65rem; font-weight: 700; }
+  .task-check.todo { border: 2px solid var(--border); }
+  .task-label.done { text-decoration: line-through; color: var(--muted); }
+  .task-tag {
+    margin-left: auto; font-size: .72rem; padding: .2rem .6rem;
+    border-radius: 100px;
+  }
+  .tag-orange { background: rgba(255,77,28,.12); color: var(--accent); }
+  .tag-blue { background: rgba(28,111,255,.10); color: var(--accent2); }
+  .tag-green { background: rgba(39,201,63,.12); color: #1a9e2d; }
+
+  /* SECTIONS COMMON */
+  section { padding: 6rem 2rem; }
+  .section-label {
+    font-size: .78rem; text-transform: uppercase; letter-spacing: .12em;
+    color: var(--accent); font-weight: 600; margin-bottom: .8rem;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800; letter-spacing: -0.03em; line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+  .section-sub {
+    font-size: 1.05rem; color: var(--muted);
+    max-width: 460px; line-height: 1.7; font-weight: 300;
+  }
+
+  /* FEATURES */
+  #features { background: var(--ink); color: var(--paper); }
+  #features .section-label { color: var(--accent); }
+  #features .section-sub { color: rgba(245,242,236,.55); }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem; margin-top: 3.5rem;
+  }
+  .feature-card {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 16px; padding: 2rem;
+    transition: border-color .3s, transform .3s;
+  }
+  .feature-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .feature-icon {
+    width: 52px; height: 52px; border-radius: 12px;
+    display: grid; place-items: center; margin-bottom: 1.4rem;
+    font-size: 1.4rem;
+  }
+  .fi-1 { background: rgba(255,77,28,.18); }
+  .fi-2 { background: rgba(28,111,255,.18); }
+  .fi-3 { background: rgba(39,201,63,.18); }
+  .feature-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem; font-weight: 700; margin-bottom: .6rem;
+  }
+  .feature-card p { font-size: .95rem; color: rgba(245,242,236,.55); line-height: 1.7; }
+
+  /* REVIEWS */
+  #reviews { background: var(--paper); }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem; margin-top: 3.5rem;
+  }
+  .review-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem;
+    transition: box-shadow .3s;
+  }
+  .review-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,.08); }
+  .stars { color: var(--accent); font-size: 1rem; margin-bottom: 1rem; }
+  .review-card blockquote {
+    font-size: 1rem; line-height: 1.75; color: #3a3835;
+    margin-bottom: 1.4rem; font-weight: 300; font-style: italic;
+  }
+  .reviewer { display: flex; align-items: center; gap: .8rem; }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: .9rem; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+  .av1 { background: linear-gradient(135deg, #ff4d1c, #ff8c69); }
+  .av2 { background: linear-gradient(135deg, #1c6fff, #69b4ff); }
+  .av3 { background: linear-gradient(135deg, #8b5cf6, #c4b5fd); }
+  .reviewer-info .name { font-weight: 600; font-size: .9rem; }
+  .reviewer-info .role { font-size: .8rem; color: var(--muted); }
+
+  /* PRICING */
+  #pricing { background: #f0ede6; }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem; margin-top: 3.5rem; align-items: start;
+  }
+  .pricing-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; padding: 2.2rem;
+    transition: transform .3s, box-shadow .3s;
+    position: relative;
+  }
+  .pricing-card.featured {
+    background: var(--ink); color: var(--paper);
+    border-color: var(--ink);
+    transform: scale(1.04);
+    box-shadow: 0 24px 60px rgba(0,0,0,.2);
+  }
+  .pricing-card:not(.featured):hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.08); }
+  .plan-badge {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--accent); color: #fff;
+    font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+    padding: .3rem .9rem; border-radius: 100px;
+  }
+  .plan-name {
+    font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800;
+    margin-bottom: .6rem; letter-spacing: .04em; text-transform: uppercase;
+  }
+  .plan-price {
+    font-family: 'Syne', sans-serif;
+    font-size: 3rem; font-weight: 800; letter-spacing: -0.04em;
+    line-height: 1; margin-bottom: .3rem;
+  }
+  .plan-price span { font-size: 1rem; font-weight: 400; opacity: .6; }
+  .plan-desc { font-size: .88rem; opacity: .6; margin-bottom: 1.6rem; }
+  .plan-features { list-style: none; margin-bottom: 2rem; display: flex; flex-direction: column; gap: .7rem; }
+  .plan-features li { font-size: .92rem; display: flex; align-items: center; gap: .6rem; }
+  .plan-features li::before { content: '✓'; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+  .pricing-card.featured .plan-features li::before { color: #ff8c69; }
+  .btn-plan {
+    display: block; text-align: center;
+    padding: .85rem; border-radius: 100px;
+    font-weight: 600; font-size: .95rem;
+    text-decoration: none; transition: all .2s; cursor: pointer; border: none;
+  }
+  .btn-plan-outline {
+    border: 1.5px solid var(--border); color: var(--ink);
+    background: transparent;
+  }
+  .btn-plan-outline:hover { border-color: var(--ink); }
+  .btn-plan-primary {
+    background: var(--accent); color: #fff;
+    box-shadow: 0 4px 20px rgba(255,77,28,.35);
+  }
+  .btn-plan-primary:hover { box-shadow: 0 6px 28px rgba(255,77,28,.5); }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink); color: rgba(245,242,236,.6);
+    padding: 4rem 2rem 2rem;
+  }
+  .footer-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr auto; gap: 3rem;
+    align-items: start; padding-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .footer-brand .logo { color: var(--paper); margin-bottom: .8rem; display: block; }
+  .footer-brand p { font-size: .9rem; max-width: 240px; line-height: 1.6; }
+  .footer-links { display: flex; gap: 3rem; }
+  .footer-col h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: .85rem; font-weight: 700; color: var(--paper);
+    text-transform: uppercase; letter-spacing: .08em; margin-bottom: 1rem;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+  .footer-col ul li a { color: rgba(245,242,236,.5); text-decoration: none; font-size: .88rem; transition: color .2s; }
+  .footer-col ul li a:hover { color: var(--paper); }
+  .footer-bottom {
+    max-width: 1100px; margin: 0 auto;
+    padding-top: 1.8rem;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    font-size: .82rem;
+  }
+  .social-links { display: flex; gap: .8rem; }
+  .social-link {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.12);
+    display: grid; place-items: center;
+    color: rgba(245,242,236,.6);
+    transition: border-color .2s, color .2s;
+    text-decoration: none; font-size: .9rem;
+  }
+  .social-link:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* CONTAINER */
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  /* SCROLL ANIMATION */
+  .reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: .1s; }
+  .reveal-delay-2 { transition-delay: .2s; }
+  .reveal-delay-3 { transition-delay: .3s; }
+
+  /* HERO ANIMATION */
+  .hero-badge { animation: fadeUp .8s ease both; }
+  .hero h1 { animation: fadeUp .8s .15s ease both; }
+  .hero p { animation: fadeUp .8s .25s ease both; }
+  .hero .btn-primary { animation: fadeUp .8s .35s ease both; }
+  .hero-mockup { animation: fadeUp .9s .5s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav ul { display: none; }
+    .footer-inner { grid-template-columns: 1fr; }
+    .footer-links { flex-wrap: wrap; gap: 2rem; }
+    .pricing-card.featured { transform: scale(1); }
+    .footer-bottom { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Task<span>Flow</span></div>
+  <ul>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <a href="#pricing" class="nav-cta">Get Started</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">✦ The smarter way to work</div>
+    <h1>Organize tasks.<br>Ship <em>faster.</em></h1>
+    <p>TaskFlow gives your team a single, calm place to plan work, track progress, and hit every deadline — without the chaos.</p>
+    <a href="#pricing" class="btn-primary">
+      Start for free
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <!-- Mockup -->
+    <div class="hero-mockup">
+      <div class="mockup-bar"><span></span><span></span><span></span></div>
+      <div class="task-list">
+        <div class="task-item">
+          <div class="task-check done"></div>
+          <span class="task-label done">Finalize Q3 report</span>
+          <span class="task-tag tag-green">Done</span>
+        </div>
+        <div class="task-item">
+          <div class="task-check done"></div>
+          <span class="task-label done">Review design mockups</span>
+          <span class="task-tag tag-green">Done</span>
+        </div>
+        <div class="task-item">
+          <div class="task-check todo"></div>
+          <span class="task-label">Launch product update</span>
+          <span class="task-tag tag-orange">Today</span>
+        </div>
+        <div class="task-item">
+          <div class="task-check todo"></div>
+          <span class="task-label">Team retrospective meeting</span>
+          <span class="task-tag tag-blue">Tomorrow</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="reveal"><p class="section-label">Features</p></div>
+    <div class="reveal reveal-delay-1"><h2 class="section-title" style="color:var(--paper)">Everything you need.<br>Nothing you don't.</h2></div>
+    <div class="reveal reveal-delay-2"><p class="section-sub">Built for focus. TaskFlow strips away the noise and gives you clean, powerful tools to move work forward.</p></div>
+    <div class="features-grid">
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon fi-1">⚡</div>
+        <h3>Instant Task Capture</h3>
+        <p>Add tasks in seconds from any device. No forms, no friction — just type and go. Your ideas are safe the moment they surface.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon fi-2">📅</div>
+        <h3>Smart Scheduling</h3>
+        <p>TaskFlow learns your work rhythm and auto-suggests the best time to tackle each task, so your calendar stops feeling like a battle.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon fi-3">🤝</div>
+        <h3>Real-time Collaboration</h3>
+        <p>Assign tasks, leave comments, and track progress together — live. Your whole team stays aligned without the endless status meetings.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="container">
+    <div class="reveal"><p class="section-label">Testimonials</p></div>
+    <div class="reveal reveal-delay-1"><h2 class="section-title">Loved by people<br>who get things done.</h2></div>
+    <div class="reveal reveal-delay-2"><p class="section-sub">Thousands of teams worldwide trust TaskFlow to keep their work on track.</p></div>
+    <div class="reviews-grid" style="margin-top:3.5rem">
+      <div class="review-card reveal reveal-delay-1">
+        <div class="stars">★★★★★</div>
+        <blockquote>"TaskFlow completely transformed the way our team operates. We went from drowning in Slack threads to shipping a full product in 6 weeks. It's the only tool that actually stuck."</blockquote>
+        <div class="reviewer">
+          <div class="avatar av1">SK</div>
+          <div class="reviewer-info">
+            <div class="name">Sofia Kim</div>
+            <div class="role">Head of Product, Lumen Labs</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card reveal reveal-delay-2">
+        <div class="stars">★★★★★</div>
+        <blockquote>"I've tried every productivity app out there. TaskFlow is the first one that doesn't make me feel like I'm managing the tool instead of my actual work. It just gets out of the way."</blockquote>
+        <div class="reviewer">
+          <div class="avatar av2">MR</div>
+          <div class="reviewer-info">
+            <div class="name">Marcus Reed</div>
+            <div class="role">Freelance Designer</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card reveal reveal-delay-3">
+        <div class="stars">★★★★★</div>
+        <blockquote>"The smart scheduling feature alone is worth it. TaskFlow told me Tuesday afternoon was my peak focus window — it was right. My output doubled in a month."</blockquote>
+        <div class="reviewer">
+          <div class="avatar av3">AP</div>
+          <div class="reviewer-info">
+            <div class="name">Aisha Patel</div>
+            <div class="role">Engineering Lead, Orbit</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <div class="reveal"><p class="section-label">Pricing</p></div>
+    <div class="reveal reveal-delay-1"><h2 class="section-title">Simple, honest pricing.</h2></div>
+    <div class="reveal reveal-delay-2"><p class="section-sub">Start free. Upgrade only when you're ready. No tricks, no hidden fees.</p></div>
+    <div class="pricing-grid">
+      <!-- FREE -->
+      <div class="pricing-card reveal reveal-delay-1">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">$0<span>/mo</span></div>
+        <div class="plan-desc">For individuals getting started</div>
+        <ul class="plan-features">
+          <li>Up to 50 tasks</li>
+          <li>1 workspace</li>
+          <li>Basic scheduling</li>
+          <li>Mobile app access</li>
+        </ul>
+        <a href="#" class="btn-plan btn-plan-outline">Get started free</a>
+      </div>
+      <!-- PRO -->
+      <div class="pricing-card featured reveal reveal-delay-2">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">$12<span>/mo</span></div>
+        <div class="plan-desc">For professionals who mean business</div>
+        <ul class="plan-features">
+          <li>Unlimited tasks</li>
+          <li>5 workspaces</li>
+          <li>Smart scheduling AI</li>
+          <li>Integrations (Slack, Calendar)</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="btn-plan btn-plan-primary">Start Pro – $12/mo</a>
+      </div>
+      <!-- TEAM -->
+      <div class="pricing-card reveal reveal-delay-3">
+        <div class="plan-name">Team</div>
+        <div class="plan-price">$29<span>/mo</span></div>
+        <div class="plan-desc">For teams that ship together</div>
+        <ul class="plan-features">
+          <li>Everything in Pro</li>
+          <li>Unlimited workspaces</li>
+          <li>Real-time collaboration</li>
+          <li>Admin dashboard</li>
+          <li>SSO & advanced security</li>
+          <li>Dedicated account manager</li>
+        </ul>
+        <a href="#" class="btn-plan btn-plan-outline">Start Team trial</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="logo">Task<span>Flow</span></span>
+      <p>Helping teams focus on what matters and ship work they're proud of.</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#">Features</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Changelog</a></li>
+          <li><a href="#">Roadmap</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:hello@taskflow.app">hello@taskflow.app</a></li>
+          <li><a href="#">Support</a></li>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 TaskFlow, Inc. All rights reserved.</span>
+    <div class="social-links">
+      <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
+      <a href="#" class="social-link" aria-label="LinkedIn">in</a>
+      <a href="#" class="social-link" aria-label="GitHub">⌥</a>
+      <a href="#" class="social-link" aria-label="Instagram">◎</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
