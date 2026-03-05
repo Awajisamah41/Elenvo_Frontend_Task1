@@ -1,4 +1,4 @@
-# Elenvo_Frontend_Task1
+# Elenvo_Frontend_Tasks
 Front-End Web Development Tasks
 
 Note
